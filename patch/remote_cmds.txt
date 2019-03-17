@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.0)
+project(remote_cmds)
+
+if (DEFINED CMAKE_INSTALL_PREFIX)
+    include_directories(SYSTEM ${CMAKE_INSTALL_PREFIX}/usr/local/include)
+    link_directories(${CMAKE_INSTALL_PREFIX}/usr/local/lib)
+endif()
+
+aux_source_directory(telnet.tproj TELNET_SRC)
+
+add_executable(telnet ${TELNET_SRC})
+target_compile_definitions(telnet PRIVATE -DTERMCAP -DKLUDGELINEMODE -DUSE_TERMIO -DENV_HACK -DAUTHENTICATION -DKRB5 -DSKEY -DIPSEC -DINET6 -DFORWARD)
+target_link_libraries(telnet PRIVATE -lcurses -lkrb4 -lkrb5 -lipsec -ltelnet)
+
+
+install(TARGETS telnet
+        RUNTIME DESTINATION bin)
